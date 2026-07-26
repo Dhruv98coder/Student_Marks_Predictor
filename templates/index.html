@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Student Marks Predictor</title>
+  
+  <link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    /* CSS से ऊपर-नीचे वाले तीर (Spinners) को हमेशा के लिए गायब करना */
+    input[type=number]::-webkit-outer-spin-button, 
+    input[type=number]::-webkit-inner-spin-button { 
+      -webkit-appearance: none !important; 
+      margin: 0 !important; 
+    }
+    input[type=number] { 
+      -moz-appearance: textfield !important; 
+      appearance: textfield !important; 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background-circle circle1"></div>
+  <div class="background-circle circle2"></div>
+
+  <div class="container form-only-container">
+    <div class="form-box">
+      <h2 style="text-align: center; margin-bottom: 25px; color: #333;">🤖 Marks Predictor Form</h2>
+      
+      <form method="POST" action="">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-user"></i> Student Name</label>
+          <input type="text" name="student_name" placeholder="Enter Your Name" required>
+        </div>
+
+        <div class="row">
+          <div class="input-group">
+            <label><i class="fa-solid fa-book"></i> Study Hours</label>
+            <input type="number" id="studyHours" name="study_hours" min="0" max="24" step="0.5" placeholder="0 - 24" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-calendar-check"></i> Attendance %</label>
+            <input type="number" id="attendance" name="attendance" min="0" max="100" placeholder="0 - 100" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-bed"></i> Sleep Hours</label>
+          <input type="number" id="sleepHours" name="sleep_hours" min="0" max="24" step="0.5" placeholder="0 - 24 Hours" required>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-wifi"></i> Use Internet?</label>
+          <div class="radio-card-group">
+            <label class="radio-card">
+              <input type="radio" name="internet_status" value="Yes" checked required>
+              <span class="card-content">Yes</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="internet_status" value="No">
+              <span class="card-content">No</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-clock"></i> Internet Usage Hours</label>
+          <input type="number" id="internetHours" name="internet_usage" min="0" max="24" step="0.5" placeholder="0 - 24 Hours" required>
+        </div>
+
+        <div class="row">
+          <div class="input-group">
+            <label><i class="fa-solid fa-list-check"></i> Total Assignments</label>
+            <input id="totalAssignments" type="number" name="total_assignments" min="1" max="100" placeholder="e.g. 20" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-check-double"></i> Completed</label>
+            <input id="completedAssignments" type="number" name="assignments_completed" min="0" max="100" placeholder="Completed" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-medal"></i> Previous Score</label>
+          <input type="number" name="previous_score" min="0" max="100" placeholder="Previous Marks" required>
+        </div>
+
+        <button type="submit" class="predict-btn">
+          <i class="fa-solid fa-rocket"></i> Predict Marks
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 🛑 1. माउस स्क्रॉल करने पर नंबर बदलने वाली समस्या को रोकना (Prevent Scroll Change)
+    document.addEventListener('wheel', function(e) {
+      if (e.target.type === 'number') {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // 🛑 2. कीबोर्ड के Up/Down एरो बटन से नंबर बदलने से रोकना (Prevent Up/Down Arrow Change)
+    document.addEventListener('keydown', function(e) {
+      if (e.target.type === 'number' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        e.preventDefault();
+      }
+    });
+
+    // बाकी Validation Logics (Internet Status)
+    const internetRadios = document.querySelectorAll('input[name="internet_status"]');
+    const internetHours = document.getElementById("internetHours");
+
+    internetRadios.forEach(radio => {
+      radio.addEventListener("change", function() {
+        if (this.value === "No") {
+          internetHours.value = 0;
+          internetHours.disabled = true;
+          internetHours.required = false; 
+          internetHours.style.opacity = "0.5";
+        } else {
+          internetHours.disabled = false;
+          internetHours.required = true;  
+          internetHours.style.opacity = "1";
+        }
+        validateTotalHours();
+      });
+    });
+
+    // Assignments Validation
+    const totalAssign = document.getElementById("totalAssignments");
+    const compAssign = document.getElementById("completedAssignments");
+    function validateAssignments() {
+      const total = parseInt(totalAssign.value) || 0;
+      const completed = parseInt(compAssign.value) || 0;
+      if (completed > total) {
+        compAssign.setCustomValidity("Completed assignments cannot be more than total!");
+      } else {
+        compAssign.setCustomValidity(""); 
+      }
+    }
+    totalAssign.addEventListener("input", validateAssignments);
+    compAssign.addEventListener("input", validateAssignments);
+
+    // 24 Hours Validation
+    const studyHours = document.getElementById("studyHours");
+    const sleepHours = document.getElementById("sleepHours");
+    function validateTotalHours() {
+      const study = parseFloat(studyHours.value) || 0;
+      const sleep = parseFloat(sleepHours.value) || 0;
+      const internet = parseFloat(internetHours.value) || 0;
+      const totalTime = study + sleep + internet;
+      if (totalTime > 24) {
+        const errorMsg = `Total time is ${totalTime} hrs. Cannot exceed 24!`;
+        studyHours.setCustomValidity(errorMsg);
+      } else {
+        studyHours.setCustomValidity("");
+      }
+    }
+    studyHours.addEventListener("input", validateTotalHours);
+    sleepHours.addEventListener("input", validateTotalHours);
+    internetHours.addEventListener("input", validateTotalHours);
+  </script>
+</body>
+</html>

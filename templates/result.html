@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediction Result</title>
+  <link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="background-circle circle1"></div>
+  <div class="background-circle circle2"></div>
+
+  <div class="container form-only-container">
+    <div class="form-box" style="text-align: center;">
+      
+      <h2>🎯 Your Result, {{ student_name }}!</h2>
+      
+      <div class="score-circle" style="background: #EEF2FF; margin: 30px auto; border: 3px dashed #6C63FF;">
+        <h1 style="color: #4F46E5; font-size: 60px; margin: 0;">{{ prediction }}</h1>
+        <span style="color: #666; font-size: 20px;">/ 100</span>
+      </div>
+      
+      {% if prediction >= 90 %}
+        <p class="badge excellent" style="font-size: 18px; padding: 15px;">⭐⭐⭐⭐⭐ Excellent Performance</p>
+      {% elif prediction >= 75 %}
+        <p class="badge good" style="font-size: 18px; padding: 15px;">⭐⭐⭐⭐ Good Performance</p>
+      {% elif prediction >= 60 %}
+        <p class="badge average" style="font-size: 18px; padding: 15px;">⭐⭐⭐ Average Performance</p>
+      {% else %}
+        <p class="badge poor" style="font-size: 18px; padding: 15px;">⭐⭐ Needs Improvement</p>
+      {% endif %}
+
+      <br><br>
+      <a href="/" style="text-decoration: none;">
+        <button class="predict-btn"><i class="fa-solid fa-arrow-left"></i> Predict Again</button>
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>
