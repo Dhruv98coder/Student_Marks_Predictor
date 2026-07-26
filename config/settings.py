@@ -12,20 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 
-=======
->>>>>>> d082aa0 (Update project files)
+
 from pathlib import Path
 
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
-<<<<<<< HEAD
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-=======
->>>>>>> d082aa0 (Update project files)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
