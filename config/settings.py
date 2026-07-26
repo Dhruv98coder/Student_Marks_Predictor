@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """
 Django settings for config project.
 
@@ -120,10 +120,8 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-<<<<<<< HEAD
 
-=======
->>>>>>> d082aa0 (Update project files)
+
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
