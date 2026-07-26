@@ -14,10 +14,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 =======
 
 from pathlib import Path
-import os
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
->>>>>>> 25cbb94c84c1d41a8575a1bd62c28df446a58727
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
